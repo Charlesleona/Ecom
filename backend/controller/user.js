@@ -85,6 +85,20 @@ export const loginUser = async (req, res) => {
         message: " Invalid Credential",
       });
     }
+
+    // Hide password
+
+    const { password: userPassword, ...userDetails } = user.toObject();
+
+    // Generate Singed Token
+    const token = jwt.sign({ _id: user.id }, process.env.JWT_SCRECT, {
+      expiresIn: "15d",
+    });
+    return res.status(200).json({
+      message: "Welcome " + user.name,
+      token,
+      userDetails,
+    });
   } catch (error) {
     return res.status(500).json({
       message: error.message,
